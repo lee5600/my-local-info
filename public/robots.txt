@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://my-local-info.pages.dev
+
+# Sitemaps
+Sitemap: https://my-local-info.pages.dev/sitemap.xml

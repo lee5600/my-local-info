@@ -1,0 +1,55 @@
+name: Daily Content Update & Deploy
+
+on:
+  schedule:
+    - cron: '0 22 * * *' # 매일 아침 7시 (한국시간) = UTC 기준 22시
+  workflow_dispatch: # 수동 실행을 위한 설정
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Git 커밋을 위한 쓰기 권한
+      deployments: write # Cloudflare 배포에 필요할 수 있음
+
+    steps:
+      - name: 저장소 코드 가져오기
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 패키지 설치
+        run: npm ci
+
+      # TODO: 나중에 정보 수집 및 AI 작성 스크립트 실행 단계를 여기에 추가
+      - name: 데이터 수집 및 블로그 글 작성 (예약 기믹)
+        run: echo "데이터 수집 및 블로그 작성을 실행합니다 (나중에 스크립트로 대체)"
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
+
+      - name: 생성된 데이터 Git 커밋 및 푸시
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: 매일 정보 수집 및 블로그 포스팅 자동화" || echo "No changes to commit"
+          git push
+
+      - name: Next.js 정적 빌드
+        run: npm run build
+        env:
+          NEXT_PUBLIC_ADSENSE_ID: ${{ secrets.NEXT_PUBLIC_ADSENSE_ID }}
+          NEXT_PUBLIC_GA_ID: ${{ secrets.NEXT_PUBLIC_GA_ID }}
+
+      - name: Cloudflare Pages 자동 배포
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: my-local-info
+          directory: out
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
