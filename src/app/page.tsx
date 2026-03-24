@@ -57,7 +57,7 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {data.events.map((item) => (
               <a 
-                href={`/info/${item.id}`} 
+                href="/blog" 
                 key={item.id}
                 className="block bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-orange-100/50 relative overflow-hidden group"
               >
@@ -103,7 +103,7 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {data.benefits.map((item) => (
               <a 
-                href={`/info/${item.id}`} 
+                href="/blog" 
                 key={item.id}
                 className="flex flex-col md:flex-row bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all border border-green-100/50 group gap-6 items-center"
               >
