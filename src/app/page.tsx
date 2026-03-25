@@ -37,7 +37,7 @@ export default async function Home() {
       {/* 1. 상단 헤더 */}
       <header className="bg-white shadow-sm pt-10 pb-8 px-4 text-center border-b border-orange-100">
         <h1 className="text-4xl font-extrabold text-orange-600 mb-2 tracking-tight">
-          🌸 성남시 생활 정보
+          🌸 인천 미추홀구 생활 정보
         </h1>
         <p className="text-gray-600 text-lg">
           우리 동네의 따뜻한 소식과 알찬 혜택을 전해드려요.
