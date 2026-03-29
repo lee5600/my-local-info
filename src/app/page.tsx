@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import AdBanner from '@/components/AdBanner';
 
 // 데이터의 형태(타입)를 정의합니다. TypeScript를 쓰면 오류를 미리 막을 수 있어요!
 type InfoItem = {
@@ -31,9 +32,36 @@ export default async function Home() {
     day: 'numeric',
   });
 
+  const jsonLdData = [
+    ...data.events.map(item => ({
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "name": item.name,
+      "startDate": item.startDate?.replace(/\./g, '-'),
+      "endDate": item.endDate?.replace(/\./g, '-') || item.startDate?.replace(/\./g, '-'),
+      "location": {
+        "@type": "Place",
+        "name": item.location,
+        "address": item.location
+      },
+      "description": item.summary
+    })),
+    ...data.benefits.map(item => ({
+      "@context": "https://schema.org",
+      "@type": "GovernmentService",
+      "name": item.name,
+      "description": item.summary,
+      "provider": {
+        "@type": "GovernmentOrganization",
+        "name": item.location || "행정기관"
+      }
+    }))
+  ];
+
   return (
     // 배경색은 따뜻한 느낌의 크림/베이지 톤(bg-orange-50)을 사용합니다.
     <div className="min-h-screen bg-orange-50 font-sans flex flex-col">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }} />
       {/* 1. 상단 헤더 */}
       <header className="bg-white shadow-sm pt-10 pb-8 px-4 text-center border-b border-orange-100">
         <h1 className="text-4xl font-extrabold text-orange-600 mb-2 tracking-tight">
@@ -92,6 +120,8 @@ export default async function Home() {
             ))}
           </div>
         </section>
+
+        <AdBanner />
 
         {/* 3. 지원금/혜택 정보 목록 */}
         <section>
